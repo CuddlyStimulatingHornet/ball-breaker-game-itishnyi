@@ -1,20 +1,12 @@
-// setLineColor(100, 100, 0);
-// setLineWidth(3);
-// drawCircle(500, 150, 150);
-
 const pixelSize = 20;
 const pixelCountX = Math.floor(canvasWidth / pixelSize);
 const pixelCountY = Math.floor(canvasHeight / pixelSize);
 
 console.log(pixelCountX, pixelCountY);
 
-const drawPixel = (x, y) => {
+const drawPixel = ({ x, y }) => {
   drawRect(x * pixelSize + 1, y * pixelSize + 1, pixelSize - 2, pixelSize - 2);
 };
-
-// for (let i = 0; i < pixelCountX; i++) {
-//   drawPixel(i, 0);
-// }
 
 const ballCoords = {
   x: 10,
@@ -29,6 +21,10 @@ const ballVelocity = {
 const onInterval = () => {
   clear();
 
+  moveBall();
+};
+
+const moveBall = () => {
   ballCoords.x += ballVelocity.x;
   ballCoords.y += ballVelocity.y;
 
@@ -40,7 +36,7 @@ const onInterval = () => {
     ballVelocity.y = -ballVelocity.y;
   }
 
-  drawPixel(ballCoords.x, ballCoords.y);
+  drawPixel(ballCoords);
 };
 
 setInterval(onInterval, 100);
