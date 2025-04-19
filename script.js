@@ -47,19 +47,54 @@ function drawBoxes() {
 function moveBall() {
   ballCoords.x += ballVelocity.x;
   ballCoords.y += ballVelocity.y;
+}
 
-  if (ballCoords.x >= pixelCountX || ballCoords.x <= 0) {
+function updateBallVelocity() {
+  if (ballCoords.x >= pixelCountX - 1 || ballCoords.x <= 0) {
     ballVelocity.x = -ballVelocity.x;
   }
-
-  if (ballCoords.y >= pixelCountY || ballCoords.y <= 0) {
+  if (ballCoords.y >= pixelCountY - 1 || ballCoords.y <= 0) {
     ballVelocity.y = -ballVelocity.y;
   }
+
+  const neighborVertical = {
+    x: ballCoords.x,
+    y: ballCoords.y + ballVelocity.y,
+  };
+  const neighborDiagonal = {
+    x: ballCoords.x + ballVelocity.x,
+    y: ballCoords.y + ballVelocity.y,
+  };
+  const neighborHorizontal = {
+    x: ballCoords.x + ballVelocity.x,
+    y: ballCoords.y,
+  };
+  if (
+    hasBox(neighborVertical) ||
+    hasBox(neighborDiagonal) ||
+    hasBox(neighborHorizontal)
+  ) {
+    ballVelocity.x = -ballVelocity.x;
+    ballVelocity.y = -ballVelocity.y;
+  }
+
+  destroyBox(neighborVertical);
+  destroyBox(neighborDiagonal);
+  destroyBox(neighborHorizontal);
+}
+
+function hasBox({ x, y }) {
+  return boxes[x][y];
+}
+
+function destroyBox({ x, y }) {
+  boxes[x][y] = false;
 }
 
 function onInterval() {
   clear();
   drawBoxes();
   moveBall();
+  updateBallVelocity();
   drawPixel(ballCoords);
 }
