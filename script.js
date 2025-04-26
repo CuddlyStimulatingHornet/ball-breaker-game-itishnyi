@@ -56,8 +56,13 @@ function drawBoxes() {
 }
 
 function moveBall() {
-  ballCoords.x += ballVelocity.x;
-  ballCoords.y += ballVelocity.y;
+  if (ballCoords.x + ballVelocity.x >= 0) {
+    ballCoords.x += ballVelocity.x;
+  }
+  if (ballCoords.y + ballVelocity.y >= 0) {
+    ballCoords.y += ballVelocity.y;
+  }
+  console.log("Current ball state: ", ballCoords, ballVelocity);
 }
 
 function getNeighbours() {
