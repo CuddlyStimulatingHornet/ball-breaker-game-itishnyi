@@ -1,6 +1,7 @@
 // configs
 const pixelSize = 20;
-const initBoxRowCount = 7;
+const initBoxRowCount = 3;
+const interval = 10;
 
 const pixelCountX = Math.floor(canvasWidth / pixelSize);
 const pixelCountY = Math.floor(canvasHeight / pixelSize);
@@ -22,7 +23,7 @@ const boxes = Array(pixelCountX)
   });
 
 initBoxes();
-setInterval(onInterval, 20);
+setInterval(onInterval, interval);
 
 function drawPixel({ x, y }, color = "red") {
   drawRect(
@@ -95,13 +96,16 @@ function updateBallVelocity(n) {
 }
 
 function destroyNeighbours(n) {
-  destroyBox(n.vertical);
-  destroyBox(n.diagonal);
-  destroyBox(n.horizontal);
+  hasBox(n.vertical) && destroyBox(n.vertical);
+  hasBox(n.diagonal) && destroyBox(n.diagonal);
+  hasBox(n.horizontal) && destroyBox(n.horizontal);
 }
 
 function hasBox({ x, y }) {
-  return boxes[x][y];
+  if (boxes[x]) {
+    return boxes[x][y];
+  }
+  return false;
 }
 
 function destroyBox({ x, y }) {
