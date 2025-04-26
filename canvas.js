@@ -28,8 +28,8 @@ const setLineWidth = (width) => {
   ctx.lineWidth = width;
 };
 
-const drawRect = (x, y, w, h) => {
-  ctx.fillStyle = "red";
+const drawRect = (x, y, w, h, color = "red") => {
+  ctx.fillStyle = color;
   ctx.fillRect(x, y, w, h);
 };
 

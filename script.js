@@ -22,10 +22,20 @@ const boxes = Array(pixelCountX)
   });
 
 initBoxes();
-setInterval(onInterval, 100);
+setInterval(onInterval, 20);
 
-function drawPixel({ x, y }) {
-  drawRect(x * pixelSize + 1, y * pixelSize + 1, pixelSize - 2, pixelSize - 2);
+function drawPixel({ x, y }, color = "red") {
+  drawRect(
+    x * pixelSize + 1,
+    y * pixelSize + 1,
+    pixelSize - 2,
+    pixelSize - 2,
+    color
+  );
+}
+
+function drawBall() {
+  drawPixel(ballCoords, "green");
 }
 
 function initBoxes() {
@@ -49,7 +59,28 @@ function moveBall() {
   ballCoords.y += ballVelocity.y;
 }
 
-function updateBallVelocity() {
+function getNeighbours() {
+  const neighbourVertical = {
+    x: ballCoords.x,
+    y: ballCoords.y + ballVelocity.y,
+  };
+  const neighbourDiagonal = {
+    x: ballCoords.x + ballVelocity.x,
+    y: ballCoords.y + ballVelocity.y,
+  };
+  const neighbourHorizontal = {
+    x: ballCoords.x + ballVelocity.x,
+    y: ballCoords.y,
+  };
+
+  return {
+    vertical: neighbourVertical,
+    diagonal: neighbourDiagonal,
+    horizontal: neighbourHorizontal,
+  };
+}
+
+function updateBallVelocity(n) {
   if (ballCoords.x >= pixelCountX - 1 || ballCoords.x <= 0) {
     ballVelocity.x = -ballVelocity.x;
   }
@@ -57,30 +88,16 @@ function updateBallVelocity() {
     ballVelocity.y = -ballVelocity.y;
   }
 
-  const neighborVertical = {
-    x: ballCoords.x,
-    y: ballCoords.y + ballVelocity.y,
-  };
-  const neighborDiagonal = {
-    x: ballCoords.x + ballVelocity.x,
-    y: ballCoords.y + ballVelocity.y,
-  };
-  const neighborHorizontal = {
-    x: ballCoords.x + ballVelocity.x,
-    y: ballCoords.y,
-  };
-  if (
-    hasBox(neighborVertical) ||
-    hasBox(neighborDiagonal) ||
-    hasBox(neighborHorizontal)
-  ) {
+  if (hasBox(n.vertical) || hasBox(n.diagonal) || hasBox(n.horizontal)) {
     ballVelocity.x = -ballVelocity.x;
     ballVelocity.y = -ballVelocity.y;
   }
+}
 
-  destroyBox(neighborVertical);
-  destroyBox(neighborDiagonal);
-  destroyBox(neighborHorizontal);
+function destroyNeighbours(n) {
+  destroyBox(n.vertical);
+  destroyBox(n.diagonal);
+  destroyBox(n.horizontal);
 }
 
 function hasBox({ x, y }) {
@@ -94,7 +111,10 @@ function destroyBox({ x, y }) {
 function onInterval() {
   clear();
   drawBoxes();
+
+  const neighbours = getNeighbours();
   moveBall();
-  updateBallVelocity();
-  drawPixel(ballCoords);
+  updateBallVelocity(neighbours);
+  destroyNeighbours(neighbours);
+  drawBall();
 }
