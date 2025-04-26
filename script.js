@@ -62,7 +62,6 @@ function moveBall() {
   if (ballCoords.y + ballVelocity.y >= 0) {
     ballCoords.y += ballVelocity.y;
   }
-  console.log("Current ball state: ", ballCoords, ballVelocity);
 }
 
 function getNeighbours() {
